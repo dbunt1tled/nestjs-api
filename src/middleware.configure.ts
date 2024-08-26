@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { AuthBearer } from 'src/core/middlewares/auth/auth.bearer';
-import { General } from 'src/core/middlewares/general';
+import { AuthBearer } from 'src/core/middleware/auth/auth.bearer';
+import { General } from 'src/core/middleware/general';
 import { FileController } from 'src/app/file/file.controller';
 
 export const configMiddleware = (consumer: MiddlewareConsumer) => {

@@ -11,28 +11,32 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nest-lab/fastify-multer';
-import { documentRegExp, fileMaxUploadSize } from 'src/core/utils/constants';
-import { FilesRequest } from 'src/app/message/dto/files.request';
+import { File } from 'src/generated/client';
 import { FastifyReply } from 'fastify';
 import { AuthUser } from 'src/core/decorator/auth.user.decorator';
 import path from 'path';
-import { User } from '../../../prisma/generated/main';
 import fs from 'node:fs';
-import { safePath, uuid4 } from 'src/core/utils';
-import { responseAPI } from 'src/core/http/response.api';
+import { safePath } from 'src/core/utils';
 import { PathParam } from 'src/app/file/dto/path.param';
 import { FileService } from 'src/app/file/file.service';
 import { FileConfig } from 'src/core/config-api/file.config';
+import { User } from 'src/generated/client';
+import { FilesRequest } from 'src/app/file/dto/files-create.request';
+import { PathInfo } from 'src/core/config-api/dto/path-info.dto';
+import { HashService } from 'src/core/hash/hash.service';
+import { NotFound } from 'src/core/exception/not-found';
+import { filesResponse } from 'src/app/file/response/files.response';
 
 @Controller('files')
 export class FileController {
   constructor(
     private readonly fileConfig: FileConfig,
+    private readonly hashService: HashService,
     private readonly fileService: FileService,
   ) {}
 
   @Get('/*')
-  async chatFiles(
+  async files(
     @Param() params: PathParam,
     @Headers() headers: any,
     @Res() res: FastifyReply,
@@ -66,11 +70,13 @@ export class FileController {
   @UseInterceptors(
     AnyFilesInterceptor({
       limits: {
-        fileSize: fileMaxUploadSize,
+        fileSize: FileConfig.UPLOAD_SIZE,
       },
       fileFilter: (req, file, cb) => {
         if (
-          !file.originalname.match(new RegExp(`\.(${documentRegExp})$`, 'iu'))
+          !file.originalname.match(
+            new RegExp(`\.(${FileConfig.UPLOAD_FILE_PATTERN})$`, 'iu'),
+          )
         ) {
           return cb(new Error('File type are not allowed!'), false);
         }
@@ -84,36 +90,36 @@ export class FileController {
     @UploadedFiles() files: any[],
     @AuthUser() user: User,
   ) {
-    const f: object[] = [];
-    const uploadPath = path.join(
-      this.fileConfig.chatPath.toString(),
-      data.chatId.toString(),
-      user.id.toString(),
-    );
+    const f: File[] = [];
+    const fileInfo = new PathInfo({ userId: data.userId });
+    const uploadPath = this.fileConfig.storagePath(fileInfo);
+    const uploadDirFull = path.join(this.fileConfig.filePath, uploadPath);
     try {
-      await fs.promises.stat(uploadPath);
+      await this.fileService.fileInfo(uploadDirFull, true);
     } catch (error) {
-      if (error.code !== 'ENOENT') {
+      if (!(error instanceof NotFound)) {
         throw error;
       }
-      await fs.promises.mkdir(uploadPath, { recursive: true });
+      await fs.promises.mkdir(uploadDirFull, { recursive: true });
     }
     await Promise.all(
       files.map(async (file) => {
-        const id = uuid4();
-        const fileName = `${id}${path.extname(file.originalname)}`;
+        const id = this.hashService.uuid7();
+        const fileName = `${this.hashService.uuid7()}${path.extname(file.originalname)}`;
         await fs.promises.writeFile(
-          path.join(uploadPath, fileName),
+          path.join(uploadDirFull, fileName),
           file.buffer,
         );
-        f.push({
+        const fileEntity = await this.fileService.create({
           id: id,
-          fileName: `/${data.chatId}/${user.id}/${fileName}`,
-          size: file.size,
-          type: 'file',
+          path: path.join(uploadPath, fileName),
+          type: data.type,
+          userId: data.userId,
+          ownerId: user.id,
         });
+        f.push(fileEntity);
       }),
     );
-    return res.status(HttpStatus.OK).send(responseAPI(f));
+    return res.status(HttpStatus.OK).send(filesResponse(f));
   }
 }
