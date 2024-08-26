@@ -2,9 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PathInfo } from 'src/core/config-api/dto/path-info.dto';
 import path from 'path';
+import 'dotenv/config';
 
 @Injectable()
 export class FileConfig {
+  static readonly UPLOAD_SIZE =
+    parseInt(process.env.FILE_UPLOAD_SIZE || '5') * 1024 * 1024;
+  static readonly UPLOAD_FILE_PATTERN =
+    process.env.UPLOAD_FILE_PATTERN || 'jpg|jpeg|png';
+
   constructor(private configService: ConfigService) {}
 
   get filePath(): string {

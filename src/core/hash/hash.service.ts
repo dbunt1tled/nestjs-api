@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
-import { random, uuid7 } from 'src/core/utils';
+import { random, uuid4, uuid7 } from 'src/core/utils';
 
 @Injectable()
 export class HashService {
@@ -12,6 +12,10 @@ export class HashService {
 
   uuid7(): string {
     return uuid7();
+  }
+
+  uuid4(): string {
+    return uuid4();
   }
 
   async decodeAsync(token: string, checkExpiry = true) {
