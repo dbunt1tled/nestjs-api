@@ -1,5 +1,6 @@
 import { FilterCondition } from './filter.condition';
 import { FilterOptions } from 'src/core/repository/filter/filter.options';
+import { Prisma } from 'src/generated/client';
 
 export class Filter {
   constructor(public readonly options?: FilterOptions) {}
@@ -7,13 +8,13 @@ export class Filter {
   build(limit?: number, where?: object): FilterCondition {
     let take = limit;
     let skip = undefined;
-    if (this.options.pagination?.page) {
+    if (this.options?.pagination?.page) {
       take = this.options.pagination.limit;
       skip = (this.options.pagination.page - 1) * this.options.pagination.limit;
     }
     return {
       where: where,
-      orderBy: this.options.sort?.field,
+      orderBy: this.options?.sort?.field,
       skip: skip,
       take: take,
     };
@@ -44,6 +45,15 @@ export class Filter {
       return {};
     }
     return { [field]: { contains: value } };
+  }
+
+  andWhereMultiFieldLike(fields: string[], value: any): object {
+    if (value === undefined || fields.length === 0) {
+      return {};
+    }
+    return {
+      OR: fields.map((f) => this.andWhereLike(f, value)),
+    };
   }
 
   andWhereNull(field: string, value: any): object {

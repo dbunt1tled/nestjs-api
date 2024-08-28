@@ -13,6 +13,7 @@ import { configMiddleware } from 'src/middleware.configure';
 import { HealthModule } from 'src/app/health/health.module';
 import { HashConfig } from 'src/core/config-api/hash.config';
 import { ConfigApiModule } from 'src/core/config-api/config-api.module';
+import { UserModule } from 'src/app/user/user.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ConfigApiModule } from 'src/core/config-api/config-api.module';
     CoreModule,
     FileModule,
     HealthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

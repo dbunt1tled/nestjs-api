@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as compression from 'compression';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -25,6 +26,15 @@ async function bootstrap() {
     credentials: true,
     maxAge: 86400,
   });
+
+  app.use(
+    compression({
+      filter: () => {
+        return true;
+      },
+      threshold: 0,
+    }),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({

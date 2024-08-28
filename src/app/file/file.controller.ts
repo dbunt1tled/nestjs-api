@@ -26,6 +26,7 @@ import { PathInfo } from 'src/core/config-api/dto/path-info.dto';
 import { HashService } from 'src/core/hash/hash.service';
 import { NotFound } from 'src/core/exception/not-found';
 import { filesResponse } from 'src/app/file/response/files.response';
+import { FileStatus } from 'src/app/file/enum/file-status';
 
 @Controller('files')
 export class FileController {
@@ -116,6 +117,7 @@ export class FileController {
           type: data.type,
           userId: data.userId,
           ownerId: user.id,
+          status: FileStatus.ACTIVE,
         });
         f.push(fileEntity);
       }),

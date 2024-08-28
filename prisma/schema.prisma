@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/client"
+  provider        = "prisma-client-js"
+  output          = "../src/generated/client"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -51,10 +52,12 @@ model File {
   ownerId   String?  @db.Uuid
   path      String
   type      Int
+  status    Int
   createdAt DateTime @default(now())
   User      User?    @relation(fields: [userId], references: [id])
 
   @@unique([path])
   @@index([type], type: Hash)
+  @@index([status], type: Hash)
   @@map("files")
 }

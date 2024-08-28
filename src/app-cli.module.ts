@@ -7,6 +7,9 @@ import { ExceptionHandler } from 'src/handler';
 import { Log } from 'src/core/logger/log';
 import { ConfigApiModule } from 'src/core/config-api/config-api.module';
 import { HashConfig } from 'src/core/config-api/hash.config';
+import { UserModule } from 'src/app/user/user.module';
+import { FileModule } from 'src/app/file/file.module';
+import { TestCommand } from 'src/command/test.command';
 
 @Module({
   imports: [
@@ -28,6 +31,8 @@ import { HashConfig } from 'src/core/config-api/hash.config';
       inject: [HashConfig],
     }),
     CoreModule,
+    UserModule,
+    FileModule,
   ],
   controllers: [],
   providers: [
@@ -36,6 +41,7 @@ import { HashConfig } from 'src/core/config-api/hash.config';
       useClass: ExceptionHandler,
     },
     Log,
+    TestCommand,
   ],
 })
 export class AppCliModule {}

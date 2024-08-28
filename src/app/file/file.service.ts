@@ -10,7 +10,7 @@ import { Unprocessable } from 'src/core/exception/unprocessable';
 
 @Injectable()
 export class FileService {
-  private readonly fileRepository = new Repository<File>('files');
+  private readonly fileRepository = new Repository<File>('file');
   constructor() {}
 
   async findById(id: string): Promise<File | null> {
@@ -20,7 +20,7 @@ export class FileService {
   async getById(id: string): Promise<File> {
     return this.fileRepository.getById(id);
   }
-
+  //TODO Denis: add Filter for file
   async one(filter: Filter): Promise<File | null> {
     return this.fileRepository.one(filter);
   }
