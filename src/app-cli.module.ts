@@ -10,6 +10,7 @@ import { HashConfig } from 'src/core/config-api/hash.config';
 import { UserModule } from 'src/app/user/user.module';
 import { FileModule } from 'src/app/file/file.module';
 import { TestCommand } from 'src/command/test.command';
+import { RoleModule } from './app/role/role.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { TestCommand } from 'src/command/test.command';
     CoreModule,
     UserModule,
     FileModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [

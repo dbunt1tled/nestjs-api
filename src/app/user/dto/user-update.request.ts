@@ -1,9 +1,11 @@
 import { UserStatus } from 'src/app/user/enum/user.status';
 
-export class UserUpdateInput {
+export class UserUpdateRequest {
   id: string;
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
-  session?: string;
+  phone?: string;
+  password?: string;
   status?: UserStatus;
 }

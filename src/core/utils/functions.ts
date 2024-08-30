@@ -155,3 +155,17 @@ export const durationToHuman = (
     ),
   );
 };
+
+export const arrayWrap = <T>(value: T | T[]): T[] => {
+  return Array.isArray(value) ? value : [value];
+};
+
+export const arrayIntersection = <T>(a: T[], b: T[]): T[] => {
+  const setA = new Set(a);
+  return b.filter((value) => setA.has(value));
+};
+
+export const arrayDifferenceLeft = <T>(a: T[], b: T[]): T[] => {
+  const setB = new Set(b);
+  return a.filter((value) => !setB.has(value));
+};

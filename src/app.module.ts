@@ -14,6 +14,7 @@ import { HealthModule } from 'src/app/health/health.module';
 import { HashConfig } from 'src/core/config-api/hash.config';
 import { ConfigApiModule } from 'src/core/config-api/config-api.module';
 import { UserModule } from 'src/app/user/user.module';
+import { RoleModule } from 'src/app/role/role.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UserModule } from 'src/app/user/user.module';
     FileModule,
     HealthModule,
     UserModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [

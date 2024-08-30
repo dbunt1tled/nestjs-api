@@ -2,6 +2,7 @@ import { Filter } from 'src/core/repository/filter/filter';
 import { Paginator } from 'src/core/repository/paginator';
 import prismaMainClient from 'src/core/repository/prisma/service/client';
 import { NotFound } from 'src/core/exception/not-found';
+import { arrayWrap } from 'src/core/utils';
 
 export class Repository<Entity> {
   public client = prismaMainClient;
@@ -47,6 +48,34 @@ export class Repository<Entity> {
       },
       data: data,
     });
+  }
+
+  async deleteCondition(
+    condition: { [key: string]: any } | Array<{ [key: string]: any }>,
+  ) {
+    condition = arrayWrap(condition);
+    await Promise.all(
+      condition.map((c: any) =>
+        this.client[this.model].deleteMany({ where: c }),
+      ),
+    );
+  }
+
+  async delete(id: string | string[]): Promise<number> {
+    id = arrayWrap(id);
+    const { count } = await this.client[this.model].deleteMany({
+      where: {
+        [this.idField]: {
+          in: id,
+        },
+      },
+    });
+
+    return count;
+  }
+
+  async createManyAndReturn(data: any[]): Promise<Entity[]> {
+    return this.client[this.model].createMany({ data: data });
   }
 
   private async resultList(
