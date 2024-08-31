@@ -3,7 +3,7 @@ import { MailService } from './mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailConfig } from 'src/core/config-api/mail.config';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import path from 'path';
+import * as path from 'path';
 
 @Global()
 @Module({
