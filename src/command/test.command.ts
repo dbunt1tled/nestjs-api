@@ -37,37 +37,37 @@ export class TestCommand extends CommandRunner {
         new FileFilter({ filter: { status: FileStatus.ACTIVE } }),
       ),
     );
-    await this.roleService.userRevokeRoles(
+    await this.roleService.revoke(
       '943e5394-f896-4a0c-8aa6-5c387be8aa0d',
     );
 
-    await this.roleService.unassignUserId(
+    await this.roleService.unassign(
       'b70bce8d-1cbb-48f6-8fa7-2935c910ac22',
       Roles.USER,
     );
 
     console.log(
-      await this.roleService.assignUserId(
+      await this.roleService.assign(
         '943e5394-f896-4a0c-8aa6-5c387be8aa0d',
         [Roles.ADMIN, Roles.USER],
       ),
     );
 
     console.log(
-      await this.roleService.assignUserId(
+      await this.roleService.assign(
         'b70bce8d-1cbb-48f6-8fa7-2935c910ac22',
         Roles.USER,
       ),
     );
 
     console.log(
-      await this.roleService.userHasRole(
+      await this.roleService.hasRole(
         'b70bce8d-1cbb-48f6-8fa7-2935c910ac22',
         Roles.USER,
       ),
     );
     console.log(
-      await this.roleService.userHasRole(
+      await this.roleService.hasRole(
         'b70bce8d-1cbb-48f6-8fa7-2935c910ac22',
         Roles.ADMIN,
       ),

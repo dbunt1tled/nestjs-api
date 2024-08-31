@@ -1,5 +1,5 @@
 import { PrismaService } from 'src/core/repository/prisma/service/prisma.service';
-import { PrismaClient } from 'src/generated/client';
+import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
   if (!globalThis.prismaGlobal) {

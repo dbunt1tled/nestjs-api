@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
-import { User } from 'src/generated/client';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { random, uuid4, uuid7 } from 'src/core/utils';
 import { HashConfig } from 'src/core/config-api/hash.config';
 import { Tokens } from 'src/core/hash/dto/tokens';
 import { TokenType } from 'src/core/hash/enums/token.type';
 import { DateTime } from 'luxon';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class HashService {

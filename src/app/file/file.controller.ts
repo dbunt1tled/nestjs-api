@@ -11,22 +11,21 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nest-lab/fastify-multer';
-import { File } from 'src/generated/client';
 import { FastifyReply } from 'fastify';
 import { AuthUser } from 'src/core/decorator/auth.user.decorator';
 import path from 'path';
 import fs from 'node:fs';
 import { safePath } from 'src/core/utils';
-import { PathParam } from 'src/app/file/dto/path.param';
+import { PathParam } from 'src/app/file/dto/request/path.param';
 import { FileService } from 'src/app/file/file.service';
 import { FileConfig } from 'src/core/config-api/file.config';
-import { User } from 'src/generated/client';
-import { FilesRequest } from 'src/app/file/dto/files-create.request';
+import { FilesRequest } from 'src/app/file/dto/request/files-create.request';
 import { PathInfo } from 'src/core/config-api/dto/path-info.dto';
 import { HashService } from 'src/core/hash/hash.service';
 import { NotFound } from 'src/core/exception/not-found';
-import { filesResponse } from 'src/app/file/response/files.response';
 import { FileStatus } from 'src/app/file/enum/file-status';
+import { User, File } from '@prisma/client';
+import { FileResponse } from 'src/app/file/response/file.response';
 
 @Controller('files')
 export class FileController {
@@ -34,6 +33,7 @@ export class FileController {
     private readonly fileConfig: FileConfig,
     private readonly hashService: HashService,
     private readonly fileService: FileService,
+    private readonly fileResponse: FileResponse,
   ) {}
 
   @Get('/*')
@@ -122,6 +122,6 @@ export class FileController {
         f.push(fileEntity);
       }),
     );
-    return res.status(HttpStatus.OK).send(filesResponse(f));
+    return res.status(HttpStatus.OK).send(this.fileResponse.json({ model: f }));
   }
 }

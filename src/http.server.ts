@@ -1,8 +1,7 @@
 import { Log } from 'src/core/logger/log';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
-import qs from 'qs';
+import * as qs from 'qs';
 import { durationToHuman, ip, uuid7 } from 'src/core/utils';
-import console from 'node:console';
 
 export const fastifyInstance = () => {
   const logger = new Log('main');

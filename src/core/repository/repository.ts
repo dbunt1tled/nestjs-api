@@ -110,4 +110,8 @@ export class Repository<Entity> {
       },
     };
   }
+
+  get attributes() {
+    return Object.keys(this.client[this.model].fields);
+  }
 }

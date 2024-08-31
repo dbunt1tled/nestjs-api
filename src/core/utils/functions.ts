@@ -169,3 +169,15 @@ export const arrayDifferenceLeft = <T>(a: T[], b: T[]): T[] => {
   const setB = new Set(b);
   return a.filter((value) => !setB.has(value));
 };
+
+export const removePropsObj = <T, K extends keyof T>(
+  obj: T,
+  props: K[],
+): Omit<T, K> => {
+  const rest = { ...obj };
+  props.forEach((prop) => {
+    delete rest[prop];
+  });
+
+  return rest;
+};

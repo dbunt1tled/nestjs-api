@@ -1,4 +1,5 @@
 import { UserStatus } from 'src/app/user/enum/user.status';
+import { Roles } from 'src/app/role/enum/roles';
 
 export class UserDto {
   id?: string;
@@ -10,4 +11,5 @@ export class UserDto {
   status: UserStatus;
   session?: string;
   confirmedAt?: Date;
+  roles?: Roles[];
 }

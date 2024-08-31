@@ -3,6 +3,7 @@ import { FilterCondition } from 'src/core/repository/filter/filter.condition';
 import { Pagination } from 'src/core/repository/pagination';
 import { SortOrder } from 'src/core/repository/sort.order';
 import { UserStatus } from 'src/app/user/enum/user.status';
+import { Roles } from 'src/app/role/enum/roles';
 
 export class UserFilter extends Filter {
   constructor(
@@ -17,6 +18,7 @@ export class UserFilter extends Filter {
         emailFilter?: string | string[];
         phoneFilter?: string | string[];
         userIdExclude?: string | string[];
+        roles?: Roles | Roles[];
       };
       sort?: SortOrder;
       pagination?: Pagination;

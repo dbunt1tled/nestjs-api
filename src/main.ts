@@ -9,6 +9,7 @@ import { runInCluster } from 'src/runInCluster';
 import { contentParser } from 'fastify-multer';
 import { ValidationPipe } from '@nestjs/common';
 import { fastifyInstance } from 'src/http.server';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const port = process.env.APP_PORT ?? 3000;
@@ -45,6 +46,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   await app.register(contentParser);
   await app.startAllMicroservices();
   await app.listen(port);

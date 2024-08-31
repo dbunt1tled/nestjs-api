@@ -15,6 +15,7 @@ import { HashConfig } from 'src/core/config-api/hash.config';
 import { ConfigApiModule } from 'src/core/config-api/config-api.module';
 import { UserModule } from 'src/app/user/user.module';
 import { RoleModule } from 'src/app/role/role.module';
+import { IsUniqueDBConstraint } from 'src/core/constraint/is-unique-db.constraint';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { RoleModule } from 'src/app/role/role.module';
       provide: APP_FILTER,
       useClass: ExceptionHandler,
     },
+    IsUniqueDBConstraint,
     AppService,
     Log,
   ],

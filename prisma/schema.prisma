@@ -6,7 +6,6 @@
 
 generator client {
   provider        = "prisma-client-js"
-  output          = "../src/generated/client"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -17,12 +16,12 @@ datasource db {
 
 model User {
   id        String    @id @db.Uuid
-  firstName String
-  lastName  String
-  email     String
-  phone     String
-  session   String?
-  hash      String?
+  firstName String    @db.VarChar(150)
+  lastName  String    @db.VarChar(150)
+  email     String    @db.VarChar(100)
+  phone     String    @db.VarChar(50)
+  session   String?   @db.VarChar(150)
+  hash      String?   @db.VarChar(255)
   status    Int       @default(0)
   confirmAt DateTime?
   createdAt DateTime  @default(now())
@@ -38,7 +37,7 @@ model User {
 
 model Role {
   userId    String   @db.Uuid
-  name      String
+  name      String   @db.VarChar(30)
   createdAt DateTime @default(now())
   User      User     @relation(fields: [userId], references: [id])
 

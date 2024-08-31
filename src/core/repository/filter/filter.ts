@@ -1,6 +1,5 @@
 import { FilterCondition } from './filter.condition';
 import { FilterOptions } from 'src/core/repository/filter/filter.options';
-import { Prisma } from 'src/generated/client';
 
 export class Filter {
   constructor(public readonly options?: FilterOptions) {}
@@ -14,7 +13,7 @@ export class Filter {
     }
     return {
       where: where,
-      orderBy: this.options?.sort?.field,
+      orderBy: this.options?.sort,
       skip: skip,
       take: take,
     };

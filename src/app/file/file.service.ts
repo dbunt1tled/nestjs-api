@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import fs from 'node:fs';
 import { NotFound } from 'src/core/exception/not-found';
 import { Repository } from 'src/core/repository/repository';
-import { File } from 'src/generated/client';
 import { Filter } from 'src/core/repository/filter/filter';
 import { Paginator } from 'src/core/repository/paginator';
 import { FilesDTO } from 'src/app/file/dto/files.dto';
 import { Unprocessable } from 'src/core/exception/unprocessable';
+import { File } from '@prisma/client';
 
 @Injectable()
 export class FileService {
@@ -56,5 +56,9 @@ export class FileService {
       }
       throw new NotFound(600002, 'File not found');
     }
+  }
+
+  modelAttributes() {
+    return this.fileRepository.attributes;
   }
 }
