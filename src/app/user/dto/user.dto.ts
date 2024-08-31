@@ -5,10 +5,10 @@ export class UserDto {
   id?: string;
   firstName?: string;
   lastName?: string;
-  email: string;
-  phone: string;
+  email?: string;
+  phone?: string;
   hash?: string;
-  status: UserStatus;
+  status?: UserStatus;
   session?: string;
   confirmedAt?: Date;
   roles?: Roles[];

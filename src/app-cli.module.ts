@@ -11,6 +11,7 @@ import { UserModule } from 'src/app/user/user.module';
 import { FileModule } from 'src/app/file/file.module';
 import { TestCommand } from 'src/command/test.command';
 import { RoleModule } from './app/role/role.module';
+import { AuthModule } from './app/auth/auth.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { RoleModule } from './app/role/role.module';
     UserModule,
     FileModule,
     RoleModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [

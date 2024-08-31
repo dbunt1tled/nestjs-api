@@ -1,27 +1,20 @@
-import { UserStatus } from 'src/app/user/enum/user.status';
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
-  IsOptional,
   IsString,
   IsStrongPassword,
-  IsUUID,
   Length,
 } from 'class-validator';
 import { IsUniqueDB } from 'src/core/decorator/is-unique-db.decorator';
 
-export class UserCreateRequest {
-  @IsOptional()
-  @IsUUID()
-  id?: string;
-
+export class SignUpRequest {
   @IsString()
   @IsNotEmpty()
   @Length(3, 150)
   firstName: string;
 
   @IsString()
+  @IsNotEmpty()
   @IsNotEmpty()
   @Length(3, 150)
   lastName: string;
@@ -40,7 +33,7 @@ export class UserCreateRequest {
 
   @IsString()
   @IsNotEmpty()
-  @Length(8, 70)
+  @Length(6, 70)
   @IsStrongPassword({
     minLength: 8,
     minLowercase: 1,
@@ -49,8 +42,4 @@ export class UserCreateRequest {
     minUppercase: 1,
   })
   password: string;
-
-  @IsOptional()
-  @IsEnum(UserStatus)
-  status?: UserStatus;
 }

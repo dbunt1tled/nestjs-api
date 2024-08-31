@@ -1,13 +1,7 @@
 import { UserStatus } from 'src/app/user/enum/user.status';
 import { UserFilter } from 'src/app/user/dto/user.filter';
 import { ListBaseQuery } from 'src/core/dto/request/list-base.query';
-import {
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
-  ValidateNested,
-} from 'class-validator';
+import { IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Roles } from 'src/app/role/enum/roles';
 import { intOrArrayToArray, stringOrArrayToArray } from 'src/core/utils';
@@ -15,14 +9,12 @@ import { intOrArrayToArray, stringOrArrayToArray } from 'src/core/utils';
 class Filter {
   @IsOptional()
   @IsString()
-  @MinLength(3)
-  @MaxLength(100)
+  @Length(3, 150)
   name?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(3)
-  @MaxLength(100)
+  @Length(3, 150)
   email?: string;
 
   @IsOptional()

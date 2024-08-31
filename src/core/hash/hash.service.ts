@@ -100,4 +100,24 @@ export class HashService {
         .toJSDate(),
     };
   }
+
+  async confirmToken(
+    user: User,
+    options?: { expiredSec?: number },
+  ): Promise<string> {
+    const expiredSec =
+      options?.expiredSec || this.hashConfig.tokenConfirmEmailLifeTime;
+
+    return await this.jwtService.signAsync(
+      {
+        sub: user.id,
+        email: user.email,
+        type: TokenType.CONFIRM_EMAIL,
+        session: user.session,
+      },
+      {
+        expiresIn: expiredSec,
+      },
+    );
+  }
 }

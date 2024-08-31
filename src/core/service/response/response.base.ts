@@ -1,5 +1,6 @@
 import { Paginator } from 'src/core/repository/paginator';
 import * as JSONAPISerializer from 'jsonapi-serializer';
+import { isPaginator } from 'src/core/utils';
 
 export abstract class ResponseBase {
   abstract json<T extends object>(data: {
@@ -8,7 +9,7 @@ export abstract class ResponseBase {
   }): Promise<any>;
 
   protected getData<T extends object>(data: T | T[] | Paginator<T>): T | T[] {
-    if ('meta' in data) {
+    if (isPaginator(data)) {
       return data.data;
     } else if (Array.isArray(data)) {
       return data;
@@ -19,7 +20,7 @@ export abstract class ResponseBase {
   protected getMeta<T extends object>(
     data: T | T[] | Paginator<T>,
   ): object | undefined {
-    if ('meta' in data) {
+    if (isPaginator(data)) {
       return data.meta;
     } else {
       return undefined;

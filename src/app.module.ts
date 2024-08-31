@@ -16,6 +16,7 @@ import { ConfigApiModule } from 'src/core/config-api/config-api.module';
 import { UserModule } from 'src/app/user/user.module';
 import { RoleModule } from 'src/app/role/role.module';
 import { IsUniqueDBConstraint } from 'src/core/constraint/is-unique-db.constraint';
+import { AuthModule } from 'src/app/auth/auth.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { IsUniqueDBConstraint } from 'src/core/constraint/is-unique-db.constrain
     HealthModule,
     UserModule,
     RoleModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

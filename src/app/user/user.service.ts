@@ -56,4 +56,12 @@ export class UserService {
   modelAttributes() {
     return this.userRepository.attributes;
   }
+
+  async findByLogin(login: string): Promise<User | null> {
+    return this.userRepository.builder.findFirst({
+      where: {
+        OR: [{ email: login }, { phone: login }],
+      },
+    });
+  }
 }

@@ -8,6 +8,7 @@ import path from 'path';
 import { Duration } from 'luxon';
 import { ToHumanDurationOptions } from 'luxon/src/duration';
 import crypto from 'node:crypto';
+import { Paginator } from 'src/core/repository/paginator';
 
 export const ip = (request: FastifyRequest | IncomingMessage) => {
   const rec = request as any;
@@ -180,4 +181,8 @@ export const removePropsObj = <T, K extends keyof T>(
   });
 
   return rest;
+};
+
+export const isPaginator = (obj: any): obj is Paginator<any> => {
+  return !!(obj && obj.meta);
 };

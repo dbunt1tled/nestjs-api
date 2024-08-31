@@ -7,6 +7,7 @@ import {
   Put,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { UserCreateRequest } from 'src/app/user/dto/request/user-create.request';
@@ -17,8 +18,11 @@ import { HashService } from 'src/core/hash/hash.service';
 import { Roles } from 'src/app/role/enum/roles';
 import { UserUpdateRequest } from 'src/app/user/dto/request/user-update.request';
 import { UserListQuery } from 'src/app/user/dto/request/user-list.query';
+import { AuthBearerGuard } from 'src/app/auth/guard/auth-bearer.guard';
+import { RBAC } from 'src/app/auth/guard/role.guard';
 
 @Controller('users')
+@UseGuards(AuthBearerGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -27,6 +31,7 @@ export class UserController {
   ) {}
 
   @Post()
+  @RBAC([Roles.ADMIN])
   async create(@Body() req: UserCreateRequest, @Res() res: FastifyReply) {
     const user = await this.userService.create({
       id: req.id || this.hashService.uuid7(),
@@ -35,6 +40,7 @@ export class UserController {
       email: req.email,
       phone: req.phone,
       hash: await this.hashService.hashPassword(req.password),
+      session: this.hashService.random(16),
       status: UserStatus.PENDING,
       roles: [Roles.USER],
     });
@@ -45,6 +51,7 @@ export class UserController {
   }
 
   @Put(':id')
+  @RBAC([Roles.ADMIN])
   async update(@Body() req: UserUpdateRequest, @Res() res: FastifyReply) {
     const user = await this.userService.update({
       id: req.id,

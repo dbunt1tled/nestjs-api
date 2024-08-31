@@ -7,7 +7,7 @@ import {
   Param,
   Post,
   Res,
-  UploadedFiles,
+  UploadedFiles, UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nest-lab/fastify-multer';
@@ -26,8 +26,10 @@ import { NotFound } from 'src/core/exception/not-found';
 import { FileStatus } from 'src/app/file/enum/file-status';
 import { User, File } from '@prisma/client';
 import { FileResponse } from 'src/app/file/response/file.response';
+import { AuthBearerGuard } from 'src/app/auth/guard/auth-bearer.guard';
 
 @Controller('files')
+@UseGuards(AuthBearerGuard)
 export class FileController {
   constructor(
     private readonly fileConfig: FileConfig,

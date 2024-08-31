@@ -1,20 +1,22 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyReply } from 'fastify';
-import { AuthToken } from 'src/core/dto/auth/auth.token';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Unauthorized } from 'src/core/exception/unauthorized';
 import { HashService } from 'src/core/hash/hash.service';
 import { UserService } from 'src/app/user/user.service';
+import { AuthToken } from 'src/core/hash/dto/auth.token';
 import { UserFilter } from 'src/app/user/dto/user.filter';
 import { UserStatus } from 'src/app/user/enum/user.status';
+import { TokenType } from 'src/core/hash/enums/token.type';
 
 @Injectable()
-export class AuthBearer implements NestMiddleware {
+export class AuthBearerGuard implements CanActivate {
   constructor(
     private readonly hashService: HashService,
-    //private readonly authService: AuthService,
     private readonly userService: UserService,
   ) {}
-  async use(req, res: FastifyReply['raw'], next: () => void) {
+
+  async canActivate(context: ExecutionContext) {
+    const req = context.switchToHttp().getRequest();
+
     let jwtToken = null;
     if (req.headers.authorization) {
       jwtToken = req.headers.authorization.replace('Bearer ', '');
@@ -32,32 +34,23 @@ export class AuthBearer implements NestMiddleware {
     try {
       token = <AuthToken>await this.hashService.decodeAsync(jwtToken);
     } catch (e) {
+      throw new Unauthorized(400001, 'Unauthorized');
+    }
+
+    if (token.type !== TokenType.ACCESS) {
       throw new Unauthorized(400002, 'Unauthorized');
     }
 
-    // const auth = await this.authService.one(
-    //   new AuthFilter({
-    //     filter: {
-    //       userId: token.iss,
-    //       session: token.session,
-    //     },
-    //   }),
-    // );
-
-    // if (!auth) {
-    //   throw new Unauthorized(400003, 'Unauthorized');
-    // }
-
     const user = await this.userService.one(
-      new UserFilter({ filter: { id: token.iss, status: UserStatus.ACTIVE } }),
+      new UserFilter({ filter: { id: token.sub, status: UserStatus.ACTIVE } }),
     );
 
     if (!user) {
-      throw new Unauthorized(400004, 'Unauthorized');
+      throw new Unauthorized(400003, 'Unauthorized');
     }
 
     req.authUser = user;
 
-    next();
+    return true;
   }
 }
