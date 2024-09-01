@@ -20,12 +20,13 @@ import { AuthUser } from 'src/core/decorator/auth.user.decorator';
 import { User } from '@prisma/client';
 import { RefreshBearerGuard } from 'src/app/auth/guard/refresh-bearer.guard';
 import { Public } from 'src/app/auth/guard/auth-bearer.guard';
+import { PublicTypes } from 'src/app/auth/enum/public-types.enum';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
+  @Public(PublicTypes.AUTH)
   @Post('signup')
   async signup(@Body() auth: SignUpRequest, @Res() res: FastifyReply) {
     const user = await this.authService.signup(auth);
@@ -34,7 +35,7 @@ export class AuthController {
     return res.status(HttpStatus.CREATED).send();
   }
 
-  @Public()
+  @Public(PublicTypes.AUTH)
   @Post('login')
   async login(@Body() auth: LoginRequest, @Res() res: FastifyReply) {
     const tokens: Tokens = await this.authService.login(auth);
@@ -54,14 +55,14 @@ export class AuthController {
     res.status(HttpStatus.OK).send({ data: tokens });
   }
 
-  @Public()
+  @Public(PublicTypes.AUTH)
   @Get('confirm-email/:token')
   async confirmEmail(@Param('token') token: string, @Res() res: FastifyReply) {
     await this.authService.confirmUser(token);
     return res.status(HttpStatus.OK).send();
   }
 
-  @Public()
+  @Public(PublicTypes.AUTH)
   @Post('confirm-email-resend')
   async confirmEmailResend(
     @Body() email: EmailConfirmResendRequest,

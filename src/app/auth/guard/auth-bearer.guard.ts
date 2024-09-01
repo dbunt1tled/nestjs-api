@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Unauthorized } from 'src/core/exception/unauthorized';
 import { HashService } from 'src/core/hash/hash.service';
 import { UserService } from 'src/app/user/user.service';
@@ -6,10 +6,11 @@ import { AuthToken } from 'src/core/hash/dto/auth.token';
 import { UserFilter } from 'src/app/user/dto/user.filter';
 import { UserStatus } from 'src/app/user/enum/user.status';
 import { TokenType } from 'src/core/hash/enums/token.type';
-import { Roles } from 'src/app/role/enum/roles';
 import { Reflector } from '@nestjs/core';
+import { PublicTypes } from 'src/app/auth/enum/public-types.enum';
 
-export const Public = Reflector.createDecorator<Roles[] | undefined>();
+export const Public = (value: PublicTypes) =>
+  SetMetadata(PublicTypes.AUTH, value);
 
 @Injectable()
 export class AuthBearerGuard implements CanActivate {
@@ -20,8 +21,17 @@ export class AuthBearerGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
-    const isPublic = this.reflector.get(Public, context.getHandler());
-    if (isPublic) {
+    let isPublic = this.reflector.get<string>(
+      PublicTypes.AUTH,
+      context.getClass(),
+    );
+    if (!isPublic) {
+      isPublic = this.reflector.get<string>(
+        PublicTypes.AUTH,
+        context.getHandler(),
+      );
+    }
+    if (isPublic === PublicTypes.AUTH) {
       return true;
     }
 
