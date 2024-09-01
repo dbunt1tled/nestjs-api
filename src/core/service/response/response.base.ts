@@ -37,6 +37,7 @@ export abstract class ResponseBase {
       keyForAttribute: 'camelCase',
       attributes: data.attributes,
       meta: data.meta,
+      pluralizeType: false,
     }).serialize(data.models);
   }
 }
