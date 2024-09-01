@@ -6,15 +6,25 @@ import { AuthToken } from 'src/core/hash/dto/auth.token';
 import { UserFilter } from 'src/app/user/dto/user.filter';
 import { UserStatus } from 'src/app/user/enum/user.status';
 import { TokenType } from 'src/core/hash/enums/token.type';
+import { Roles } from 'src/app/role/enum/roles';
+import { Reflector } from '@nestjs/core';
+
+export const Public = Reflector.createDecorator<Roles[] | undefined>();
 
 @Injectable()
 export class AuthBearerGuard implements CanActivate {
   constructor(
+    private readonly reflector: Reflector,
     private readonly hashService: HashService,
     private readonly userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
+    const isPublic = this.reflector.get(Public, context.getHandler());
+    if (isPublic) {
+      return true;
+    }
+
     const req = context.switchToHttp().getRequest();
 
     let jwtToken = null;

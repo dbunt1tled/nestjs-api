@@ -22,7 +22,6 @@ import { AuthBearerGuard } from 'src/app/auth/guard/auth-bearer.guard';
 import { RBAC } from 'src/app/auth/guard/role.guard';
 
 @Controller('users')
-@UseGuards(AuthBearerGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,

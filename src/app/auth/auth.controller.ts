@@ -5,7 +5,8 @@ import {
   HttpStatus,
   Param,
   Post,
-  Res, UseGuards,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { LoginRequest } from 'src/app/auth/dto/login.request';
@@ -17,13 +18,14 @@ import { Unprocessable } from 'src/core/exception/unprocessable';
 import { UserStatus } from 'src/app/user/enum/user.status';
 import { AuthUser } from 'src/core/decorator/auth.user.decorator';
 import { User } from '@prisma/client';
-import { AuthBearerGuard } from 'src/app/auth/guard/auth-bearer.guard';
 import { RefreshBearerGuard } from 'src/app/auth/guard/refresh-bearer.guard';
+import { Public } from 'src/app/auth/guard/auth-bearer.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('signup')
   async signup(@Body() auth: SignUpRequest, @Res() res: FastifyReply) {
     const user = await this.authService.signup(auth);
@@ -32,6 +34,7 @@ export class AuthController {
     return res.status(HttpStatus.CREATED).send();
   }
 
+  @Public()
   @Post('login')
   async login(@Body() auth: LoginRequest, @Res() res: FastifyReply) {
     const tokens: Tokens = await this.authService.login(auth);
@@ -39,7 +42,6 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthBearerGuard)
   async logout(@AuthUser() user: User, @Res() res: FastifyReply) {
     await this.authService.logout(user);
     return res.status(HttpStatus.OK).send();
@@ -52,12 +54,14 @@ export class AuthController {
     res.status(HttpStatus.OK).send({ data: tokens });
   }
 
+  @Public()
   @Get('confirm-email/:token')
   async confirmEmail(@Param('token') token: string, @Res() res: FastifyReply) {
     await this.authService.confirmUser(token);
     return res.status(HttpStatus.OK).send();
   }
 
+  @Public()
   @Post('confirm-email-resend')
   async confirmEmailResend(
     @Body() email: EmailConfirmResendRequest,

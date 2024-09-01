@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { FileModule } from 'src/app/file/file.module';
 import CoreModule from 'src/core/core.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ExceptionHandler } from 'src/handler';
 import { Log } from 'src/core/logger/log';
 import { FastifyMulterModule, MulterOptions } from '@nest-lab/fastify-multer';
@@ -17,6 +17,8 @@ import { UserModule } from 'src/app/user/user.module';
 import { RoleModule } from 'src/app/role/role.module';
 import { IsUniqueDBConstraint } from 'src/core/constraint/is-unique-db.constraint';
 import { AuthModule } from 'src/app/auth/auth.module';
+import { RoleGuard } from 'src/app/auth/guard/role.guard';
+import { AuthBearerGuard } from 'src/app/auth/guard/auth-bearer.guard';
 
 @Module({
   imports: [
@@ -54,6 +56,14 @@ import { AuthModule } from 'src/app/auth/auth.module';
     {
       provide: APP_FILTER,
       useClass: ExceptionHandler,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthBearerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
     },
     IsUniqueDBConstraint,
     AppService,

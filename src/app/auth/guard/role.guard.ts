@@ -1,8 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Forbidden } from 'src/core/exception/forbidden';
 import { Roles } from 'src/app/role/enum/roles';
@@ -11,7 +7,7 @@ import { RoleService } from 'src/app/role/role.service';
 export const RBAC = Reflector.createDecorator<Roles[] | undefined>();
 
 @Injectable()
-export class SuperAdminRoleGuard implements CanActivate {
+export class RoleGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly roleService: RoleService,
@@ -19,9 +15,10 @@ export class SuperAdminRoleGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest();
-    let roles = this.reflector.get(RBAC, context.getHandler());
+    const roles = this.reflector.get(RBAC, context.getHandler());
+
     if (!roles) {
-      roles = [Roles.USER];
+      return true;
     }
 
     if (!this.roleService.hasRole(req.authUser.id, roles)) {

@@ -29,7 +29,6 @@ import { FileResponse } from 'src/app/file/response/file.response';
 import { AuthBearerGuard } from 'src/app/auth/guard/auth-bearer.guard';
 
 @Controller('files')
-@UseGuards(AuthBearerGuard)
 export class FileController {
   constructor(
     private readonly fileConfig: FileConfig,
