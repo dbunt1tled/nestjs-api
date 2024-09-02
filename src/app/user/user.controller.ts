@@ -7,7 +7,6 @@ import {
   Put,
   Query,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { UserCreateRequest } from 'src/app/user/dto/request/user-create.request';
@@ -18,7 +17,6 @@ import { HashService } from 'src/core/hash/hash.service';
 import { Roles } from 'src/app/role/enum/roles';
 import { UserUpdateRequest } from 'src/app/user/dto/request/user-update.request';
 import { UserListQuery } from 'src/app/user/dto/request/user-list.query';
-import { AuthBearerGuard } from 'src/app/auth/guard/auth-bearer.guard';
 import { RBAC } from 'src/app/auth/guard/role.guard';
 
 @Controller('users')
