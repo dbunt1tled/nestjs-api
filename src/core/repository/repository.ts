@@ -2,7 +2,7 @@ import { Filter } from 'src/core/repository/filter/filter';
 import { Paginator } from 'src/core/repository/paginator';
 import prismaMainClient from 'src/core/repository/prisma/service/client';
 import { NotFound } from 'src/core/exception/not-found';
-import { arrayWrap } from 'src/core/utils';
+import { arrayWrap, removePropsObj } from 'src/core/utils';
 
 export class Repository<Entity> {
   public client = prismaMainClient;
@@ -46,7 +46,7 @@ export class Repository<Entity> {
       where: {
         [this.idField]: data[this.idField],
       },
-      data: data,
+      data: removePropsObj(data, [this.idField]),
     });
   }
 

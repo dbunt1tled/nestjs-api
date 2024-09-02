@@ -39,7 +39,7 @@ export class RefreshBearerGuard implements CanActivate {
       new UserFilter({ filter: { id: token.sub, status: UserStatus.ACTIVE } }),
     );
 
-    if (!user) {
+    if (!user || user.session !== token.session) {
       throw new Unauthorized(400011, 'Unauthorized');
     }
 

@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  SetMetadata,
+  Type,
+} from '@nestjs/common';
 import { Unauthorized } from 'src/core/exception/unauthorized';
 import { HashService } from 'src/core/hash/hash.service';
 import { UserService } from 'src/app/user/user.service';
@@ -8,9 +14,10 @@ import { UserStatus } from 'src/app/user/enum/user.status';
 import { TokenType } from 'src/core/hash/enums/token.type';
 import { Reflector } from '@nestjs/core';
 import { PublicTypes } from 'src/app/auth/enum/public-types.enum';
+import { RefreshBearerGuard } from 'src/app/auth/guard/refresh-bearer.guard';
 
-export const Public = (value: PublicTypes) =>
-  SetMetadata(PublicTypes.AUTH, value);
+export const Public = (value?: PublicTypes) =>
+  SetMetadata(PublicTypes.AUTH, value || PublicTypes.AUTH);
 
 @Injectable()
 export class AuthBearerGuard implements CanActivate {
@@ -21,17 +28,11 @@ export class AuthBearerGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
-    let isPublic = this.reflector.get<string>(
-      PublicTypes.AUTH,
-      context.getClass(),
-    );
-    if (!isPublic) {
-      isPublic = this.reflector.get<string>(
-        PublicTypes.AUTH,
-        context.getHandler(),
-      );
+    if (this.checkPublic(PublicTypes.AUTH, context)) {
+      return true;
     }
-    if (isPublic === PublicTypes.AUTH) {
+
+    if (this.checkGuard(RefreshBearerGuard, context)) {
       return true;
     }
 
@@ -65,12 +66,41 @@ export class AuthBearerGuard implements CanActivate {
       new UserFilter({ filter: { id: token.sub, status: UserStatus.ACTIVE } }),
     );
 
-    if (!user) {
+    if (!user || user.session !== token.session) {
       throw new Unauthorized(400003, 'Unauthorized');
     }
 
     req.authUser = user;
 
     return true;
+  }
+
+  checkPublic(publicType: PublicTypes, context: ExecutionContext) {
+    let isPublic = this.reflector.get<string>(
+      PublicTypes.AUTH,
+      context.getClass(),
+    );
+    if (!isPublic) {
+      isPublic = this.reflector.get<string>(
+        PublicTypes.AUTH,
+        context.getHandler(),
+      );
+    }
+    if (isPublic === publicType) {
+      return true;
+    }
+    return false;
+  }
+
+  checkGuard(guard: Type<CanActivate>, context: ExecutionContext) {
+    const methodGuards = this.reflector.getAllAndOverride<Type<CanActivate>[]>(
+      '__guards__',
+      [context.getHandler()],
+    );
+    const controllerGuards = this.reflector.getAllAndOverride<
+      Type<CanActivate>[]
+    >('__guards__', [context.getClass()]);
+    const allGuards = [...(methodGuards || []), ...(controllerGuards || [])];
+    return allGuards.some((g) => g === guard);
   }
 }

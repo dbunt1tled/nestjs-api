@@ -4,10 +4,10 @@ import { IncomingMessage } from 'http';
 import { createHash } from 'crypto';
 import { v7 as uuidv7 } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
+import * as path from 'path';
 import { Duration } from 'luxon';
 import { ToHumanDurationOptions } from 'luxon/src/duration';
-import crypto from 'node:crypto';
+import * as crypto from 'node:crypto';
 import { Paginator } from 'src/core/repository/paginator';
 
 export const ip = (request: FastifyRequest | IncomingMessage) => {
@@ -36,6 +36,10 @@ export const random = (size: number = 32): string => {
 
 export const uuid7 = () => uuidv7();
 export const uuid4 = () => uuidv4();
+
+export const base64decode = (s: string): string =>
+  Buffer.from(s, 'base64').toString();
+export const base64encode = (s: string) => Buffer.from(s).toString('base64');
 
 export const safeJSONParse = (p: any) => {
   try {

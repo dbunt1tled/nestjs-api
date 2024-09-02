@@ -6,6 +6,7 @@ import { UserFilter } from 'src/app/user/dto/user.filter';
 import { UserDto } from 'src/app/user/dto/user.dto';
 import { RoleService } from 'src/app/role/role.service';
 import { User } from '@prisma/client';
+import { removePropsObj } from 'src/core/utils';
 
 @Injectable()
 export class UserService {
@@ -30,10 +31,13 @@ export class UserService {
   }
 
   async create(data: UserDto): Promise<User> {
-    const user = await this.userRepository.create(data);
+    const roles = data.roles;
+    const user = await this.userRepository.create(
+      removePropsObj(data, ['roles']),
+    );
 
-    if (data.roles) {
-      await this.roleService.assign(user.id, data.roles);
+    if (roles) {
+      await this.roleService.assign(user.id, roles);
     }
 
     return user;
@@ -43,11 +47,14 @@ export class UserService {
     if (!data.id) {
       throw new Unprocessable(500003, 'Wrong user arguments');
     }
-    const user = await this.userRepository.update(data);
+    const roles = data.roles;
+    const user = await this.userRepository.update(
+      removePropsObj(data, ['roles']),
+    );
 
-    if (data.roles) {
+    if (roles) {
       await this.roleService.revoke(user.id);
-      await this.roleService.assign(user.id, data.roles);
+      await this.roleService.assign(user.id, roles);
     }
 
     return user;

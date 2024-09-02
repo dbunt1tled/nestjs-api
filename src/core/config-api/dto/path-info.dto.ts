@@ -1,5 +1,5 @@
 import { Storage } from 'src/core/config-api/enums/storage.enum';
-import path from 'path';
+import * as path from 'path';
 
 export class PathInfo {
   constructor(private readonly data: { userId?: string }) {}

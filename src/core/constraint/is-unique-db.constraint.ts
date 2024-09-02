@@ -25,7 +25,7 @@ export class IsUniqueDBConstraint implements ValidatorConstraintInterface {
     const dataExist = await this.client.$queryRawUnsafe(
       `SELECT EXISTS(SELECT 1 FROM ${tableName} WHERE ${column} = '${value}' ${excludeWhere} LIMIT 1)`,
     );
-    return !dataExist;
+    return !dataExist[0].exists;
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {

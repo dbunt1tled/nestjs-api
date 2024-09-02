@@ -10,6 +10,6 @@ export class UserDto {
   hash?: string;
   status?: UserStatus;
   session?: string;
-  confirmedAt?: Date;
+  confirmAt?: Date;
   roles?: Roles[];
 }

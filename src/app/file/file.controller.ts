@@ -13,8 +13,8 @@ import {
 import { AnyFilesInterceptor } from '@nest-lab/fastify-multer';
 import { FastifyReply } from 'fastify';
 import { AuthUser } from 'src/core/decorator/auth.user.decorator';
-import path from 'path';
-import fs from 'node:fs';
+import * as path from 'path';
+import * as fs from 'node:fs';
 import { safePath } from 'src/core/utils';
 import { PathParam } from 'src/app/file/dto/request/path.param';
 import { FileService } from 'src/app/file/file.service';

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PathInfo } from 'src/core/config-api/dto/path-info.dto';
-import path from 'path';
+import * as path from 'path';
 import 'dotenv/config';
 
 @Injectable()

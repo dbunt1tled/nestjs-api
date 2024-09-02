@@ -39,7 +39,12 @@ export class AuthService {
       throw new Unauthorized(400007, 'Wrong login or password');
     }
 
-    return await this.hashService.tokens(user);
+    const u = await this.userService.update({
+      id: user.id,
+      session: this.hashService.random(16),
+    });
+
+    return await this.hashService.tokens(u);
   }
 
   async signup(auth: SignUpRequest): Promise<User> {
@@ -76,7 +81,11 @@ export class AuthService {
   }
 
   async refresh(user: User): Promise<Tokens> {
-    return await this.hashService.tokens(user);
+    const u = await this.userService.update({
+      id: user.id,
+      session: this.hashService.random(16),
+    });
+    return await this.hashService.tokens(u);
   }
 
   async confirmUser(token: string): Promise<User> {
@@ -95,7 +104,7 @@ export class AuthService {
     return await this.userService.update({
       id: user.id,
       status: UserStatus.ACTIVE,
-      confirmedAt: new Date(),
+      confirmAt: new Date(),
       session: this.hashService.random(16),
     });
   }

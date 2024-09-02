@@ -1,23 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Algorithm } from 'jsonwebtoken';
+import { base64decode } from 'src/core/utils';
 
 @Injectable()
 export class HashConfig {
   constructor(private configService: ConfigService) {}
 
   get publicKey(): string {
-    return Buffer.from(
+    return base64decode(
       this.configService.getOrThrow('JWT_PUBLIC_KEY').toString(),
-      'base64',
-    ).toString();
+    );
   }
 
   get privateKey(): string {
-    return Buffer.from(
+    return base64decode(
       this.configService.getOrThrow('JWT_PRIVATE_KEY').toString(),
-      'base64',
-    ).toString();
+    );
   }
 
   get jwtAlgorithm(): Algorithm {

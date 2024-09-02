@@ -12,6 +12,7 @@ export const fastifyInstance = () => {
     ignoreTrailingSlash: true,
     ignoreDuplicateSlashes: true,
     bodyLimit: 26214400,
+    maxParamLength: 1000,
     querystringParser: (str) => qs.parse(str),
     genReqId: () => uuid7(),
   }).getInstance();
