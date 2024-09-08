@@ -1,13 +1,16 @@
 import { SortOrder } from 'src/core/repository/sort.order';
+import { Sorting } from 'src/core/repository/sorting';
 
-export const sort = ({ value }): SortOrder|undefined => {
+export const sort = ({ value }): SortOrder | undefined => {
   if (!value) {
     return undefined;
   }
-  return <SortOrder>value.split(',').map((v: string) => {
-    const [field, order] = v.trim().split(':');
-    return { [field.trim()]: order?.trim() || 'asc' };
-  });
+  return <SortOrder>{
+    field: value.split(',').map((v: string) => {
+      const [field, order] = v.trim().split(':');
+      return <Sorting>{ field: { [field.trim()]: order?.trim() || 'asc' } };
+    }),
+  };
 };
 
 export const include = ({ value }): string[] | undefined => {
