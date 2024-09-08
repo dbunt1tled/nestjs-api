@@ -39,12 +39,6 @@ export abstract class ResponseBase {
       attributes: data.attributes,
       meta: data.meta,
       pluralizeType: false,
-      // roles: {
-      //   ref: function (user, role) {
-      //     return `${role.userId}-${role.name}`;
-      //   },
-      //   attributes: ['name'],
-      // },
       ...data.relationships,
     }).serialize(data.models);
   }
