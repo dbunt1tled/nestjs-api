@@ -6,11 +6,13 @@ import { include, sort } from 'src/core/utils';
 export class ListBaseQuery {
   @Min(1)
   @Max(1000)
-  page: number = 1;
+  @IsOptional()
+  page?: number;
 
   @Min(1)
   @Max(1000)
-  limit: number = 25;
+  @IsOptional()
+  limit?: number;
 
   @IsOptional()
   @Transform(include)

@@ -73,6 +73,8 @@ export class UserController {
     const users = await this.userService.list(query.toFilter());
     return res
       .code(HttpStatus.OK)
-      .send(await this.userResponse.json({ model: users }));
+      .send(
+        await this.userResponse.json({ model: users, include: query.include }),
+      );
   }
 }

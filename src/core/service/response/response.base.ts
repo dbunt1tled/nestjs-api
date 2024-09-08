@@ -31,6 +31,7 @@ export abstract class ResponseBase {
     models: T | T[];
     type: string;
     attributes?: string[];
+    relationships?: object;
     meta?: object;
   }): any {
     return new JSONAPISerializer.Serializer(data.type, {
@@ -38,6 +39,13 @@ export abstract class ResponseBase {
       attributes: data.attributes,
       meta: data.meta,
       pluralizeType: false,
+      // roles: {
+      //   ref: function (user, role) {
+      //     return `${role.userId}-${role.name}`;
+      //   },
+      //   attributes: ['name'],
+      // },
+      ...data.relationships,
     }).serialize(data.models);
   }
 }

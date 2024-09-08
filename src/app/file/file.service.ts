@@ -7,6 +7,7 @@ import { Paginator } from 'src/core/repository/paginator';
 import { FilesDTO } from 'src/app/file/dto/files.dto';
 import { Unprocessable } from 'src/core/exception/unprocessable';
 import { File } from '@prisma/client';
+import { FileFilter } from 'src/app/file/dto/file.filter';
 
 @Injectable()
 export class FileService {
@@ -20,12 +21,12 @@ export class FileService {
   async getById(id: string): Promise<File> {
     return this.fileRepository.getById(id);
   }
-  //TODO Denis: add Filter for file
-  async one(filter: Filter): Promise<File | null> {
+
+  async one(filter: FileFilter): Promise<File | null> {
     return this.fileRepository.one(filter);
   }
 
-  async list(filter: Filter): Promise<File[] | Paginator<File>> {
+  async list(filter: FileFilter): Promise<File[] | Paginator<File>> {
     return this.fileRepository.list(filter);
   }
 
