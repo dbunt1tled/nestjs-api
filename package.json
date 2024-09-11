@@ -62,7 +62,7 @@
     "@types/multer": "^1.4.12",
     "@types/node": "^22.5.4",
     "@types/nodemailer": "^6.4.15",
-    "@types/pg": "^8.11.8",
+    "@types/pg": "^8.11.9",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -75,7 +75,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   },
   "jest": {
     "moduleFileExtensions": [
