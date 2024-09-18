@@ -2,6 +2,7 @@ import { Log } from 'src/core/logger/log';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import * as qs from 'qs';
 import { durationToHuman, ip, uuid7 } from 'src/core/utils';
+import { INestApplication } from '@nestjs/common';
 
 export const fastifyInstance = () => {
   const logger = new Log('main');
@@ -65,12 +66,31 @@ export const fastifyInstance = () => {
     });
   }
 
-  process.on('SIGINT', () => {
-    server.close(() => {
-      console.log('Server has been shut down');
-      process.exit(0);
-    });
+  return server;
+};
+
+export const gracefulShutdown = async (app: INestApplication) => {
+  process.on('SIGINT', async () => {
+    await killAppWithGrace(app, 'SIGINT');
   });
 
-  return server;
+  process.on('SIGTERM', async () => {
+    await killAppWithGrace(app, 'SIGTERM');
+  });
+};
+
+async function killAppWithGrace(app: INestApplication, code: string) {
+  const logger = new Log('Shutdown');
+  setTimeout(() => process.exit(1), 5000);
+  logger.verbose(`Signal received with code ${code} ⚡.`);
+  logger.log('❗ Closing http server with grace.');
+
+  try {
+    await app.close();
+    logger.log('✅  Http server closed.');
+    process.exit(0);
+  } catch (error: any) {
+    logger.error(`❌  Http server closed with error: ${error}`);
+    process.exit(1);
+  }
 }

@@ -8,7 +8,7 @@ import {
 import { runInCluster } from 'src/runInCluster';
 import { contentParser } from 'fastify-multer';
 import { ValidationPipe } from '@nestjs/common';
-import { fastifyInstance } from 'src/http.server';
+import { fastifyInstance, gracefulShutdown } from 'src/http.server';
 import { useContainer } from 'class-validator';
 
 async function bootstrap() {
@@ -49,6 +49,7 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   await app.register(contentParser);
   await app.startAllMicroservices();
+  await gracefulShutdown(app);
   await app.listen(port);
 }
 runInCluster(bootstrap);
